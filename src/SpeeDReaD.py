@@ -35,6 +35,11 @@ class SpeedRead(QThread):
     settings = None
 
     def __init__(self, gui):
+        """
+        Implements QThread to provide the ability to change the word(s) displayed in the reading area at the proper
+        interval.
+        :param GUI gui: The current instance of GUI
+        """
         self.load_settings()
         self.gui = gui
         self.current_word = 0

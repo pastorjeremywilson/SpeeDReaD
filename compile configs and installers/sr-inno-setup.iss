@@ -23,11 +23,11 @@ DisableProgramGroupPage=yes
 LicenseFile=C:\Users\pasto\Desktop\output\SpeeDReaD\_internal\resources\gpl-3.0.rtf
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest  
-WizardImageFile=X:\DocumentsPython Workspace\SpeeDReaD\src\resources\installImage.bmp
+WizardImageFile=X:\Documents\Python Workspace\SpeeDReaD\src\resources\installImage.bmp
 WizardSmallImageFile = X:\Documents\Python Workspace\SpeeDReaD\src\resources\installImageSmall.bmp
 PrivilegesRequiredOverridesAllowed=dialog
 OutputDir=X:\Documents\Python Workspace\SpeeDReaD\compile configs and installers
-OutputBaseFilename=Setup SpeeDReaD v.{#MyAppVersion}
+OutputBaseFilename=Setup_SpeeDReaD_v.{#MyAppVersion}
 SetupIconFile=X:\Documents\Python Workspace\SpeeDReaD\src\resources\icons.ico
 Compression=lzma
 SolidCompression=yes
@@ -40,8 +40,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\pasto\Nextcloud\Documents\Python Workspace\SpeeDReaD\compile configs and installers\output\SpeeDReaD\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\pasto\Nextcloud\Documents\Python Workspace\SpeeDReaD\compile configs and installers\output\SpeeDReaD\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\pasto\Desktop\output\SpeeDReaD\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\pasto\Desktop\output\SpeeDReaD\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
