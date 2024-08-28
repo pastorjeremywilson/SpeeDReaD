@@ -4,7 +4,7 @@
 #define MyAppName "SpeeDReaD"
 #define MyAppVersion "2.1.1"
 #define MyAppPublisher "Wilson's Widgets"
-#define MyAppURL "https://sourceforge.net/projects/speed-read/"
+#define MyAppURL "https://sourceforge.net/projects/SpeeDReaD/"
 #define MyAppExeName "SpeeDReaD.exe"
 
 [Setup]
@@ -20,15 +20,15 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
-LicenseFile=C:\Users\pasto\Nextcloud\Documents\Python Workspace\SpeeDReaD\compile configs and installers\output\SpeeDReaD\resources\gpl-3.0.rtf
+LicenseFile=C:\Users\pasto\Desktop\output\SpeeDReaD\_internal\resources\gpl-3.0.rtf
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest  
-WizardImageFile=C:\Users\pasto\Nextcloud\Documents\Python Workspace\SpeeDReaD\src\resources\installImage.bmp
-WizardSmallImageFile = C:\Users\pasto\Nextcloud\Documents\Python Workspace\SpeeDReaD\src\resources\installImageSmall.bmp
+WizardImageFile=X:\DocumentsPython Workspace\SpeeDReaD\src\resources\installImage.bmp
+WizardSmallImageFile = X:\Documents\Python Workspace\SpeeDReaD\src\resources\installImageSmall.bmp
 PrivilegesRequiredOverridesAllowed=dialog
-OutputDir=C:\Users\pasto\Nextcloud\Documents\Python Workspace\SpeeDReaD\compile configs and installers
+OutputDir=X:\Documents\Python Workspace\SpeeDReaD\compile configs and installers
 OutputBaseFilename=Setup SpeeDReaD v.{#MyAppVersion}
-SetupIconFile=C:\Users\pasto\Nextcloud\Documents\Python Workspace\SpeeDReaD\src\resources\icons.ico
+SetupIconFile=X:\Documents\Python Workspace\SpeeDReaD\src\resources\icons.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
