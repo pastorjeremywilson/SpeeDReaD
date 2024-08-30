@@ -26,7 +26,7 @@ LicenseFile=C:\Users\pasto\Desktop\output\SpeeDReaD\_internal\resources\gpl-3.0.
 WizardImageFile=X:\Documents\Python Workspace\SpeeDReaD\src\resources\installImage.bmp
 WizardSmallImageFile = X:\Documents\Python Workspace\SpeeDReaD\src\resources\installImageSmall.bmp
 PrivilegesRequiredOverridesAllowed=dialog
-OutputDir=C:\Users\pasto\Desktop\output\SpeeDReaD\compile configs and installers
+OutputDir=C:\Users\pasto\Desktop\output
 OutputBaseFilename=Setup_SpeeDReaD_v.{#MyAppVersion}
 SetupIconFile=X:\Documents\Python Workspace\SpeeDReaD\src\resources\icons.ico
 Compression=lzma
@@ -42,7 +42,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "C:\Users\pasto\Desktop\output\SpeeDReaD\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\pasto\Desktop\output\SpeeDReaD\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\pasto\Desktop\output\SermonPrepDatabase\_internal\src\README.html"; DestDir: "{app}"; Flags: isreadme
+Source: "C:\Users\pasto\Desktop\output\SpeeDReaD\_internal\README.html"; DestDir: "{app}"; Flags: isreadme
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

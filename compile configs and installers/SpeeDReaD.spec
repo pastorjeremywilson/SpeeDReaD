@@ -5,7 +5,7 @@ a = Analysis(
     ['..\\src\\SpeeDReaD.py'],
     pathex=[],
     binaries=[],
-    datas=[('X:/Documents/Python Workspace/SpeeDReaD/src/resources', 'resources/'), ('X:/Documents/Python Workspace/SpeeDReaD/src', 'src/')],
+    datas=[('X:/Documents/Python Workspace/SpeeDReaD/src/resources', 'resources/'), ('X:/Documents/Python Workspace/SpeeDReaD/src', 'src/'), ('X:/Documents/Python Workspace/SpeeDReaD/README.md', '.'), ('X:/Documents/Python Workspace/SpeeDReaD/README.html', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
