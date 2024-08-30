@@ -29,6 +29,8 @@ class GUI(QMainWindow):
 
     def __init__(self):
         super().__init__()
+        os.chdir(os.path.dirname(__file__))
+
         self.icons = {
             'window': QIcon('resources/sr_logo.svg'),
             'edit': QIcon('resources/edit.svg'),
