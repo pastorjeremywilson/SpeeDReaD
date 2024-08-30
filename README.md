@@ -16,7 +16,7 @@ Additionally, as we read blocks of text on a screen or in a book, our eyes tend 
 # Installation
 
 Currently, SpeeDReaD is available for the Microsoft Windows operating
-system only. Download the current SpeeDReaD installer (v.2.1.1) and run
+system only. Download the current SpeeDReaD installer (v.2.1.2) and run
 it on your computer.
 
 # Using SpeeDReaD
