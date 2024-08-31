@@ -24,6 +24,10 @@ class GUI(QMainWindow):
     timed_popup = pyqtSignal(str)
     block_word_slider_signals = pyqtSignal(bool)
     set_word_slider_value = pyqtSignal(int)
+    set_speed_slider_value = pyqtSignal(int)
+    set_time_remaining_text = pyqtSignal(str)
+    reading_ready = pyqtSignal(int)
+    set_gui_settings = pyqtSignal(dict)
 
     current_font = None
     punctuation_pause = None
@@ -192,6 +196,35 @@ class GUI(QMainWindow):
 
     def set_word(self, word):
         self.word_label.setText(word)
+
+    def speed_slider_set_value(self, value):
+        self.speed_slider.setValue(value)
+
+    def time_remainting_set_text(self, text):
+        self.time_remaining_label.setText(text)
+
+    def reading_ready_widget_set(self, num_words):
+        self.word_slider.setEnabled(True)
+        self.word_slider.setRange(1, num_words)
+        self.start_button.setEnabled(True)
+        self.stop_button.setEnabled(True)
+
+    def set_settings(self, settings):
+        self.current_font = QFont(settings['font_name'], settings['font_size'])
+        self.word_label.setFont(self.current_font)
+        self.change_background(settings['background'])
+
+        self.punctuation_pause = settings['pause']
+        if settings['pause']:
+            self.options_menu.pause_punctuation_action.setIcon(self.icons['punctuation_on'])
+        else:
+            self.options_menu.pause_punctuation_action.setIcon(self.icons['punctuation_off'])
+
+        self.group_words = settings['combine']
+        if settings['combine']:
+            self.options_menu.group_words_action.setIcon(self.icons['combine_on'])
+        else:
+            self.options_menu.group_words_action.setIcon(self.icons['combine_off'])
 
     def change_background(self, color):
         self.current_background = color

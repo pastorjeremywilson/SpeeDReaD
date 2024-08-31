@@ -127,7 +127,7 @@ class SpeedRead(QThread):
         self.reading_speed = 60 / wpm
         self.calc_time_remaining()
         if move_slider:
-            self.gui.speed_slider.setValue(wpm)
+            self.gui.set_speed_slider_value.emit(wpm)
 
     def set_current_word(self, word_num):
         """
@@ -188,7 +188,7 @@ class SpeedRead(QThread):
             else:
                 result = str(hours) + ':' + str(minutes) + ':' + str(seconds)
 
-            self.gui.time_remaining_label.setText(result + ' remaining')
+            self.gui.set_time_remaining_text.emit(result + ' remaining')
 
     def timed_popup(self, text):
         """
@@ -271,35 +271,18 @@ class SpeedRead(QThread):
         """
         if self.settings['reading_text'] and len(self.settings['reading_text']) > 0:
             self.change_text(self.settings['reading_text'])
-            self.gui.word_slider.setEnabled(True)
-            self.gui.word_slider.setRange(1, len(self.settings['reading_text'].split(' ')))
-            self.gui.start_button.setEnabled(True)
-            self.gui.stop_button.setEnabled(True)
+            self.gui.reading_ready.emit(len(self.settings['reading_text'].split(' ')))
 
         self.wpm = self.settings['speed']
         self.set_reading_speed(self.settings['speed'])
-        self.gui.speed_slider.setValue(self.wpm)
+        self.gui.set_speed_slider_value.emit(self.wpm)
 
         if self.settings['current_word']:
             self.set_current_word(self.settings['current_word'])
         else:
             self.current_word = 0
 
-        self.gui.current_font = QFont(self.settings['font_name'], self.settings['font_size'])
-        self.gui.word_label.setFont(self.gui.current_font)
-        self.gui.change_background(self.settings['background'])
-
-        self.gui.punctuation_pause = self.settings['pause']
-        if self.settings['pause']:
-            self.gui.options_menu.pause_punctuation_action.setIcon(self.gui.icons['punctuation_on'])
-        else:
-            self.gui.options_menu.pause_punctuation_action.setIcon(self.gui.icons['punctuation_off'])
-
-        self.gui.group_words = self.settings['combine']
-        if self.settings['combine']:
-            self.gui.options_menu.group_words_action.setIcon(self.gui.icons['combine_on'])
-        else:
-            self.gui.options_menu.group_words_action.setIcon(self.gui.icons['combine_off'])
+        self.gui.set_gui_settings.emit(self.settings)
 
 class Startup:
     def __init__(self):
@@ -320,6 +303,10 @@ class Startup:
         gui.timed_popup.connect(speed_read.timed_popup)
         gui.block_word_slider_signals.connect(gui.word_slider_block_signals)
         gui.set_word_slider_value.connect(gui.word_slider_set_value)
+        gui.set_speed_slider_value.connect(gui.speed_slider_set_value)
+        gui.set_time_remaining_text.connect(gui.time_remainting_set_text)
+        gui.reading_ready.connect(gui.reading_ready_widget_set)
+        gui.set_gui_settings.connect(gui.set_settings)
 
         speed_read.apply_settings()
         gui.showMaximized()

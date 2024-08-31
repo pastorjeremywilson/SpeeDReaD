@@ -1,1 +1,0 @@
-Check for any remaining calls directly to GUI from SpeedRead and change to signals
