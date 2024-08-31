@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "SpeeDReaD"
-#define MyAppVersion "2.1.2"
+#define MyAppVersion "2.1.3"
 #define MyAppPublisher "Wilson's Widgets"
 #define MyAppURL "https://sourceforge.net/projects/SpeeDReaD/"
 #define MyAppExeName "SpeeDReaD.exe"

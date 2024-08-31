@@ -124,6 +124,7 @@ class GUI(QMainWindow):
         speed_widget.setLayout(speed_layout)
 
         self.speed_label = QLabel('200 wpm')
+        self.speed_label.setFont(QFont('Arial', 12, QFont.Bold))
         speed_layout.addWidget(self.speed_label)
 
         self.time_remaining_label = QLabel()
@@ -462,7 +463,7 @@ class GUI(QMainWindow):
         regular_font = QFont('Arial', 12)
 
         self.help_widget = QTabWidget()
-        self.help_widget.setWindowTitle('SpeeDReaD v.2.1.2')
+        self.help_widget.setWindowTitle('SpeeDReaD v.2.1.3')
         self.help_widget.setFixedSize(800, 500)
         self.help_widget.setFont(QFont('Arial-Bold', 16))
 
@@ -479,7 +480,7 @@ class GUI(QMainWindow):
         logo_label.setPixmap(QPixmap('resources/sr_logo.svg'))
         container_layout.addWidget(logo_label, 0, 0, 2, 1, Qt.AlignTop)
 
-        help_title = QLabel('SpeeDReaD v.2.1.2')
+        help_title = QLabel('SpeeDReaD v.2.1.3')
         help_title.setFont(title_font)
         container_layout.addWidget(help_title, 0, 1)
 
@@ -487,7 +488,7 @@ class GUI(QMainWindow):
         help_text.setReadOnly(True)
         help_text.setStyleSheet('background: none; border: none;')
         help_text.setFont(regular_font)
-        help_text.setText('SpeeDReaD v.2.1.2 (pronounced Speedy Read-y) is a program to help you read faster. By flashing the'
+        help_text.setText('SpeeDReaD v.2.1.3 (pronounced Speedy Read-y) is a program to help you read faster. By flashing the'
                           'individual words of what you want to read on a single spot on your screen, you avoid both '
                           'the rapid eye movements and the internal sounding-out of the words that can slow you down. '
                           'In a short time, you will be able to increase your reading speed greatly.\n\n See below '
