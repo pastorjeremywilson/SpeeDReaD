@@ -23,12 +23,12 @@ DisableProgramGroupPage=yes
 LicenseFile=C:\Users\pasto\Desktop\output\SpeeDReaD\_internal\resources\gpl-3.0.rtf
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest  
-WizardImageFile=X:\Documents\Python Workspace\SpeeDReaD\src\resources\installImage.bmp
-WizardSmallImageFile = X:\Documents\Python Workspace\SpeeDReaD\src\resources\installImageSmall.bmp
+WizardImageFile=X:\Documents\Python Workspace\SpeeDReaD\resources\installImage.bmp
+WizardSmallImageFile = X:\Documents\Python Workspace\SpeeDReaD\resources\installImageSmall.bmp
 PrivilegesRequiredOverridesAllowed=dialog
 OutputDir=C:\Users\pasto\Desktop\output
 OutputBaseFilename=Setup_SpeeDReaD_v.{#MyAppVersion}
-SetupIconFile=X:\Documents\Python Workspace\SpeeDReaD\src\resources\icons.ico
+SetupIconFile=X:\Documents\Python Workspace\SpeeDReaD\resources\icons.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
