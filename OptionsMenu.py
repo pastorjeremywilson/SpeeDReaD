@@ -3,11 +3,19 @@ from PyQt5.QtWidgets import QMenu, QAction
 
 class OptionsMenu(QMenu):
     def __init__(self, gui):
+        """
+        Implements QMenu to provide a popup menu for the settings button in GUI
+        :param GUI gui: The current instance of GUI
+        """
         self.gui = gui
         super().__init__()
         self.create_menu()
 
     def create_menu(self):
+        """
+        Method to add all of the actions to this menu
+        :return:
+        """
         change_font_action = QAction(self.gui.options_button)
         change_font_action.setIcon(self.gui.icons['font'])
         change_font_action.setText('&Change Font')

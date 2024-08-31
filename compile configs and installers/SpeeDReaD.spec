@@ -2,10 +2,10 @@
 
 
 a = Analysis(
-    ['..\\src\\SpeeDReaD.py'],
+    ['..\\SpeeDReaD.py'],
     pathex=[],
     binaries=[],
-    datas=[('X:/Documents/Python Workspace/SpeeDReaD/src/resources', 'resources/'), ('X:/Documents/Python Workspace/SpeeDReaD/src', 'src/'), ('X:/Documents/Python Workspace/SpeeDReaD/README.md', '.'), ('X:/Documents/Python Workspace/SpeeDReaD/README.html', '.')],
+    datas=[('X:/Documents/Python Workspace/SpeeDReaD/resources', 'resources/'), ('X:/Documents/Python Workspace/SpeeDReaD/README.md', '.'), ('X:/Documents/Python Workspace/SpeeDReaD/README.html', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -32,7 +32,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['X:\\Documents\\Python Workspace\\SpeeDReaD\\src\\resources\\icons.ico'],
+    icon=['X:\\Documents\\Python Workspace\\SpeeDReaD\\resources\\icons.ico'],
 )
 coll = COLLECT(
     exe,
