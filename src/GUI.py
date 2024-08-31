@@ -17,10 +17,13 @@ class GUI(QMainWindow):
     set_reading_speed = pyqtSignal(int)
     start_words = pyqtSignal()
     stop_words = pyqtSignal()
-    set_current_word = pyqtSignal(int)
+    set_current_word_index = pyqtSignal(int)
+    set_current_word_string = pyqtSignal(str)
     change_text = pyqtSignal(str)
     save_settings = pyqtSignal()
     timed_popup = pyqtSignal(str)
+    block_word_slider_signals = pyqtSignal(bool)
+    set_word_slider_value = pyqtSignal(int)
 
     current_font = None
     punctuation_pause = None
@@ -80,7 +83,7 @@ class GUI(QMainWindow):
         self.word_slider.setOrientation(Qt.Horizontal)
         self.word_slider.setAutoFillBackground(False)
         self.word_slider.setFocusPolicy(Qt.NoFocus)
-        self.word_slider.valueChanged.connect(self.change_word)
+        self.word_slider.valueChanged.connect(self.slider_word_change)
         self.word_slider.setToolTip('Drag to change current word')
         slider_layout.addWidget(self.word_slider)
         main_layout.addWidget(slider_container)
@@ -176,8 +179,19 @@ class GUI(QMainWindow):
 
         main_layout.addWidget(button_widget)
 
-    def change_word(self):
-        self.set_current_word.emit(self.sender().value() - 1)
+    def slider_word_change(self):
+        self.set_current_word_index.emit(self.sender().value() - 1)
+
+    def word_slider_block_signals(self, value):
+        self.word_slider.blockSignals(value)
+
+    def word_slider_set_value(self, index):
+        self.word_slider.blockSignals(True)
+        self.word_slider.setValue(index)
+        self.word_slider_block_signals(False)
+
+    def set_word(self, word):
+        self.word_label.setText(word)
 
     def change_background(self, color):
         self.current_background = color
@@ -242,7 +256,7 @@ class GUI(QMainWindow):
             self.stop_words.emit()
             self.start_button.setChecked(False)
         time.sleep(0.3)
-        self.set_current_word.emit(0)
+        self.set_current_word_index.emit(0)
 
     def load_text(self):
         dialog = QDialog()
