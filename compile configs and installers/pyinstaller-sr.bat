@@ -5,4 +5,4 @@
 --add-data "X:/Documents/Python Workspace/SpeeDReaD/README.md;." ^
 --add-data "X:/Documents/Python Workspace/SpeeDReaD/README.html;." ^
 --distpath "C:\Users\pasto\Desktop\output" ^
-"../src/SpeeDReaD.py" --name="SpeeDReaD"
+"../SpeeDReaD.py" --name="SpeeDReaD"
