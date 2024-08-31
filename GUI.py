@@ -35,6 +35,9 @@ class GUI(QMainWindow):
     current_background = None
 
     def __init__(self):
+        """
+        GUI implements QMainWindow to provide the user interface
+        """
         super().__init__()
         os.chdir(os.path.dirname(__file__))
 
@@ -56,6 +59,10 @@ class GUI(QMainWindow):
         self.setWindowIcon(self.icons['window'])
 
     def create_gui(self):
+        """
+        Sets and lays out the various components of the gui
+        :return:
+        """
         main_widget = QWidget()
         main_layout = QVBoxLayout()
         main_layout.setContentsMargins(0, 0, 0, 0)
@@ -184,32 +191,72 @@ class GUI(QMainWindow):
         main_layout.addWidget(button_widget)
 
     def slider_word_change(self):
+        """
+        Method called when the user moves the word slider
+        :return:
+        """
         self.set_current_word_index.emit(self.sender().value() - 1)
 
     def word_slider_block_signals(self, value):
+        """
+        Method called by the block_word_slider_signals signal
+        :param bool value: Block Signals
+        :return:
+        """
         self.word_slider.blockSignals(value)
 
-    def word_slider_set_value(self, index):
+    def word_slider_set_value(self, value):
+        """
+        Method to set the value of the word slider while preventing its signals from firing
+        :param int value:  Value to set the slider to
+        :return:
+        """
         self.word_slider.blockSignals(True)
-        self.word_slider.setValue(index)
+        self.word_slider.setValue(value)
         self.word_slider_block_signals(False)
 
     def set_word(self, word):
+        """
+        Method called by the set_current_word_string signal to set the word currently being displayed
+        :param str word: The word to show
+        :return:
+        """
         self.word_label.setText(word)
 
     def speed_slider_set_value(self, value):
+        """
+        Method called by the set_speed_slider_value signal
+        :param int value: Value to set the speed slider to
+        :return:
+        """
         self.speed_slider.setValue(value)
 
     def time_remainting_set_text(self, text):
+        """
+        Method called by the set_time_remaining_text signal to set what the time remaining label shows
+        :param str text: Text to show
+        :return:
+        """
         self.time_remaining_label.setText(text)
 
     def reading_ready_widget_set(self, num_words):
+        """
+        Method called by the reading_ready signal. Enables the word slider and start and stop buttons, as well as
+        setting the word slider's range
+        :param int num_words: Number of words in the text to be read
+        :return:
+        """
         self.word_slider.setEnabled(True)
         self.word_slider.setRange(1, num_words)
         self.start_button.setEnabled(True)
         self.stop_button.setEnabled(True)
 
     def set_settings(self, settings):
+        """
+        Method to apply settings related to the GUI
+        :param dict settings: Settings from the user's settings file
+        :return:
+        """
         self.current_font = QFont(settings['font_name'], settings['font_size'])
         self.word_label.setFont(self.current_font)
         self.change_background(settings['background'])
@@ -227,6 +274,11 @@ class GUI(QMainWindow):
             self.options_menu.group_words_action.setIcon(self.icons['combine_off'])
 
     def change_background(self, color):
+        """
+        Method to change the background color of the reading area
+        :param str color: Color to change to
+        :return:
+        """
         self.current_background = color
         if color == 'white':
             self.word_widget.setStyleSheet('background-color: white')
@@ -242,6 +294,11 @@ class GUI(QMainWindow):
             self.word_label.setStyleSheet('color: white')
 
     def pause_for_punctuation(self):
+        """
+        Method to provide the user with feedback when turning punctuation pause on or off as well as change the
+        punctuation pause icon
+        :return:
+        """
         if self.punctuation_pause:
             self.punctuation_pause = False
             self.options_menu.pause_punctuation_action.setIcon(self.icons['punctuation_off'])
@@ -252,6 +309,11 @@ class GUI(QMainWindow):
             self.timed_popup.emit('Punctuation Pause ON')
 
     def combine_words(self):
+        """
+        Method to provide the user with feedback when turning combine words on or off as well as change the
+        group words icon
+        :return:
+        """
         if self.group_words:
             self.group_words = False
             self.options_menu.group_words_action.setIcon(self.icons['combine_off'])
@@ -262,11 +324,19 @@ class GUI(QMainWindow):
             self.timed_popup.emit('Combine Small Words ON')
 
     def change_speed(self):
+        """
+        Method to set the reading speed and speed label text when user changes the speed slider
+        :return:
+        """
         value = self.sender().value()
         self.speed_label.setText(str(value) + ' wpm')
         self.set_reading_speed.emit(value)
 
     def change_font(self):
+        """
+        Method to provide the user with a font dialog when changing the reading display font
+        :return:
+        """
         font_dialog = QFontDialog()
         result = font_dialog.getFont(self.current_font, self, 'Choose Reading Font')
 
@@ -275,6 +345,12 @@ class GUI(QMainWindow):
             self.word_label.setFont(self.current_font)
 
     def start_reading(self, set_state=False):
+        """
+        Method called when user clicks the play/pause button. Determines whether to start or stop running the words
+        and calls the appropriate signal.
+        :param set_state: Whether to also change the checked state of the play/pause button
+        :return:
+        """
         if self.start_button.isChecked():
             self.stop_words.emit()
             if set_state:
@@ -285,6 +361,11 @@ class GUI(QMainWindow):
                 self.start_button.setChecked(True)
 
     def reset(self):
+        """
+        Method called when the user clicks the stop button. Ensures start_button is unchecked and sets the current
+        word back to the first word.
+        :return:
+        """
         if self.start_button.isChecked():
             self.stop_words.emit()
             self.start_button.setChecked(False)
@@ -292,6 +373,10 @@ class GUI(QMainWindow):
         self.set_current_word_index.emit(0)
 
     def load_text(self):
+        """
+        Provides the user with a dialog to paste the text they would like to read, or to import text from an epub file.
+        :return:
+        """
         dialog = QDialog()
         dialog.setModal(True)
         layout = QVBoxLayout()
@@ -369,10 +454,15 @@ class GUI(QMainWindow):
                     self.stop_button.setEnabled(True)
 
     def show_help(self):
+        """
+        Creates a tabbed widget showing the help and about topics.
+        :return:
+        """
         title_font = QFont('Arial-Bold', 24)
         regular_font = QFont('Arial', 12)
 
         self.help_widget = QTabWidget()
+        self.help_widget.setWindowTitle('SpeeDReaD v.2.1.2')
         self.help_widget.setFixedSize(800, 500)
         self.help_widget.setFont(QFont('Arial-Bold', 16))
 
@@ -389,7 +479,7 @@ class GUI(QMainWindow):
         logo_label.setPixmap(QPixmap('resources/sr_logo.svg'))
         container_layout.addWidget(logo_label, 0, 0, 2, 1, Qt.AlignTop)
 
-        help_title = QLabel('SpeeDReaD')
+        help_title = QLabel('SpeeDReaD v.2.1.2')
         help_title.setFont(title_font)
         container_layout.addWidget(help_title, 0, 1)
 
@@ -397,7 +487,7 @@ class GUI(QMainWindow):
         help_text.setReadOnly(True)
         help_text.setStyleSheet('background: none; border: none;')
         help_text.setFont(regular_font)
-        help_text.setText('SpeeDReaD (pronounced Speedy Read-y) is a program to help you read faster. By flashing the'
+        help_text.setText('SpeeDReaD v.2.1.2 (pronounced Speedy Read-y) is a program to help you read faster. By flashing the'
                           'individual words of what you want to read on a single spot on your screen, you avoid both '
                           'the rapid eye movements and the internal sounding-out of the words that can slow you down. '
                           'In a short time, you will be able to increase your reading speed greatly.\n\n See below '
@@ -451,6 +541,11 @@ class GUI(QMainWindow):
         self.help_widget.show()
 
     def keyPressEvent(self, evt):
+        """
+        Overrides keyPressEvent to provide keyboard functions related to the program.
+        :param evt:
+        :return:
+        """
         if evt.modifiers and Qt.ControlModifier:
             if evt.key() == Qt.Key_R:
                 if self.start_button.isEnabled():
@@ -470,5 +565,10 @@ class GUI(QMainWindow):
                 self.reset()
 
     def closeEvent(self, evt):
+        """
+        Overrides closeEvent to ensure that settings are saved before exiting
+        :param evt:
+        :return:
+        """
         self.save_settings.emit()
         evt.accept()
