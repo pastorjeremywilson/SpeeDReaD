@@ -7,9 +7,9 @@
    viewBox="0 0 33.866666 33.866668"
    version="1.1"
    id="svg8"
-   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   inkscape:version="1.4.3 (0d15f75042, 2025-12-25)"
    sodipodi:docname="combine_grey.svg"
-   inkscape:export-filename="C:\Users\pasto\Nextcloud\Documents\Python Workspace\SpeeDReaD\src\resources\combine._greypng.png"
+   inkscape:export-filename="combine_grey.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -28,24 +28,29 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="3.959798"
-     inkscape:cx="122.73353"
-     inkscape:cy="35.860415"
+     inkscape:zoom="5.6"
+     inkscape:cx="70.357142"
+     inkscape:cy="67.767857"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      units="px"
      inkscape:window-width="1920"
-     inkscape:window-height="1009"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:window-height="1008"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="2"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1">
     <inkscape:grid
        type="xygrid"
-       id="grid8362" />
+       id="grid8362"
+       originx="0"
+       originy="0"
+       spacingy="1"
+       spacingx="1"
+       units="px" />
   </sodipodi:namedview>
   <metadata
      id="metadata5">
@@ -65,15 +70,22 @@
      id="layer1"
      transform="translate(0,-263.13331)">
     <rect
-       style="opacity:1;fill:#00ff00;fill-opacity:1;stroke:none;stroke-width:1.32291675;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+       style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.30255;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+       id="rect1"
+       width="33.866669"
+       height="33.866676"
+       x="-4.4408921e-16"
+       y="263.1333" />
+    <rect
+       style="opacity:1;fill:#00ff00;fill-opacity:1;stroke:none;stroke-width:1.15384;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
        id="rect8404"
-       width="34.395836"
-       height="34.395836"
-       x="0"
-       y="262.60416" />
+       width="30"
+       height="30.000021"
+       x="2"
+       y="265.1333" />
     <path
-       style="fill:#000000;stroke:none;stroke-width:0.527697px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 11.90625,264.45623 v 10.55392 H 1.3523148 v 10.55394 H 11.90625 v 10.55394 H 22.460185 V 285.56409 H 33.01412 V 275.01015 H 22.460185 v -10.55392 z"
+       style="fill:#000000;stroke:none;stroke-width:0.466667px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 12.333334,266.13331 v 9.33332 H 3.0000001 v 9.33334 h 9.3333339 v 9.33334 h 9.333333 v -9.33334 h 9.333334 v -9.33334 h -9.333334 v -9.33332 z"
        id="path8400"
        inkscape:connector-curvature="0" />
   </g>

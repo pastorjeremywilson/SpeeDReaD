@@ -129,7 +129,6 @@ class Main:
         """
         self.wpm = wpm
         self.reading_speed = 60 / wpm
-        print(f'wpm, reading speed: {self.wpm}, {self.reading_speed}')
         self.calc_time_remaining()
         if move_slider:
             self.gui.speed_slider.setValue(wpm)
@@ -141,7 +140,6 @@ class Main:
         :param word_num: Desired word's index
         :return:
         """
-        print(word_num)
         self.current_word = word_num
         self.gui.set_word(self.word_array[self.current_word])
         self.gui.word_slider.setValue(word_num + 1)
