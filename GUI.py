@@ -14,31 +14,20 @@ from OptionsMenu import OptionsMenu
 
 
 class GUI(QMainWindow):
-    set_reading_speed = pyqtSignal(int)
-    start_words = pyqtSignal()
-    stop_words = pyqtSignal()
-    set_current_word_index = pyqtSignal(int)
     set_current_word_string = pyqtSignal(str)
-    change_text = pyqtSignal(str)
-    save_settings = pyqtSignal()
-    timed_popup = pyqtSignal(str)
-    block_word_slider_signals = pyqtSignal(bool)
     set_word_slider_value = pyqtSignal(int)
-    set_speed_slider_value = pyqtSignal(int)
-    set_time_remaining_text = pyqtSignal(str)
-    reading_ready = pyqtSignal(int)
-    set_gui_settings = pyqtSignal(dict)
 
     current_font = None
     punctuation_pause = None
     group_words = None
     current_background = None
 
-    def __init__(self):
+    def __init__(self, main):
         """
-        GUI implements QMainWindow to provide the user interface
+        Builds the user interface and performs functions relating to user input. Implements QMainWindow.
         """
         super().__init__()
+        self.main = main
         os.chdir(os.path.dirname(__file__))
 
         self.icons = {
@@ -54,9 +43,12 @@ class GUI(QMainWindow):
             'combine_off': QIcon('resources/combine.svg'),
             'combine_on': QIcon('resources/combine_grey.svg')
         }
+
         self.create_gui()
         self.setWindowTitle('SpeeDReaD')
         self.setWindowIcon(self.icons['window'])
+        self.setWindowState(Qt.WindowState.WindowMaximized)
+        self.showMaximized()
 
     def create_gui(self):
         """
@@ -196,7 +188,7 @@ class GUI(QMainWindow):
         Method called when the user moves the word slider
         :return:
         """
-        self.set_current_word_index.emit(self.sender().value() - 1)
+        self.main.set_current_word(self.sender().value() - 1)
 
     def word_slider_block_signals(self, value):
         """
@@ -252,28 +244,6 @@ class GUI(QMainWindow):
         self.start_button.setEnabled(True)
         self.stop_button.setEnabled(True)
 
-    def set_settings(self, settings):
-        """
-        Method to apply settings related to the GUI
-        :param dict settings: Settings from the user's settings file
-        :return:
-        """
-        self.current_font = QFont(settings['font_name'], settings['font_size'])
-        self.word_label.setFont(self.current_font)
-        self.change_background(settings['background'])
-
-        self.punctuation_pause = settings['pause']
-        if settings['pause']:
-            self.options_menu.pause_punctuation_action.setIcon(self.icons['punctuation_on'])
-        else:
-            self.options_menu.pause_punctuation_action.setIcon(self.icons['punctuation_off'])
-
-        self.group_words = settings['combine']
-        if settings['combine']:
-            self.options_menu.group_words_action.setIcon(self.icons['combine_on'])
-        else:
-            self.options_menu.group_words_action.setIcon(self.icons['combine_off'])
-
     def change_background(self, color):
         """
         Method to change the background color of the reading area
@@ -282,17 +252,17 @@ class GUI(QMainWindow):
         """
         self.current_background = color
         if color == 'white':
-            self.word_widget.setStyleSheet('background-color: white')
-            self.word_label.setStyleSheet('font-color: black')
+            self.word_widget.setStyleSheet('background-color: white;')
+            self.word_label.setStyleSheet('color: #303040;')
         elif color == 'cream':
-            self.word_widget.setStyleSheet('background-color: #EFE0D0')
-            self.word_label.setStyleSheet('font-color: black')
+            self.word_widget.setStyleSheet('background-color: #cfc0a0;')
+            self.word_label.setStyleSheet('color: #303040;')
         elif color == 'neutral':
-            self.word_widget.setStyleSheet('background-color: #B0B0B0')
-            self.word_label.setStyleSheet('font-color: black')
+            self.word_widget.setStyleSheet('background-color: #a0a0a5;')
+            self.word_label.setStyleSheet('color: #303040;')
         elif color == 'black':
-            self.word_widget.setStyleSheet('background-color: black')
-            self.word_label.setStyleSheet('color: white')
+            self.word_widget.setStyleSheet('background-color: black;')
+            self.word_label.setStyleSheet('color: #b0b0b5;')
 
     def pause_for_punctuation(self):
         """
@@ -303,11 +273,11 @@ class GUI(QMainWindow):
         if self.punctuation_pause:
             self.punctuation_pause = False
             self.options_menu.pause_punctuation_action.setIcon(self.icons['punctuation_off'])
-            self.timed_popup.emit('Punctuation Pause OFF')
+            self.main.timed_popup('Punctuation Pause OFF')
         else:
             self.punctuation_pause = True
             self.options_menu.pause_punctuation_action.setIcon(self.icons['punctuation_on'])
-            self.timed_popup.emit('Punctuation Pause ON')
+            self.main.timed_popup('Punctuation Pause ON')
 
     def combine_words(self):
         """
@@ -318,11 +288,13 @@ class GUI(QMainWindow):
         if self.group_words:
             self.group_words = False
             self.options_menu.group_words_action.setIcon(self.icons['combine_off'])
-            self.timed_popup.emit('Combine Small Words OFF')
+            self.main.timed_popup('Combine Small Words OFF')
         else:
             self.group_words = True
             self.options_menu.group_words_action.setIcon(self.icons['combine_on'])
-            self.timed_popup.emit('Combine Small Words ON')
+            self.main.timed_popup('Combine Small Words ON')
+
+        self.main.change_text(' '.join(self.main.word_array), False)
 
     def change_speed(self):
         """
@@ -331,7 +303,7 @@ class GUI(QMainWindow):
         """
         value = self.sender().value()
         self.speed_label.setText(str(value) + ' wpm')
-        self.set_reading_speed.emit(value)
+        self.main.set_reading_speed(value)
 
     def change_font(self):
         """
@@ -353,11 +325,11 @@ class GUI(QMainWindow):
         :return:
         """
         if self.start_button.isChecked():
-            self.stop_words.emit()
+            self.main.stop()
             if set_state:
                 self.start_button.setChecked(False)
         else:
-            self.start_words.emit()
+            self.main.start_reading()
             if set_state:
                 self.start_button.setChecked(True)
 
@@ -368,10 +340,10 @@ class GUI(QMainWindow):
         :return:
         """
         if self.start_button.isChecked():
-            self.stop_words.emit()
+            self.main.stop()
             self.start_button.setChecked(False)
         time.sleep(0.3)
-        self.set_current_word_index.emit(0)
+        self.main.set_current_word(0)
 
     def load_text(self):
         """
@@ -419,11 +391,7 @@ class GUI(QMainWindow):
 
         result = dialog.exec()
         if result == 0:
-            self.change_text.emit(text_edit.toPlainText())
-            self.word_slider.setEnabled(True)
-            self.word_slider.setRange(1, len(text_edit.toPlainText().split(' ')))
-            self.start_button.setEnabled(True)
-            self.stop_button.setEnabled(True)
+            self.main.change_text(text_edit.toPlainText())
         elif result == 2:
             file_dialog = QFileDialog()
             result = file_dialog.getOpenFileName(
@@ -448,7 +416,7 @@ class GUI(QMainWindow):
                         if len(text.strip()) > 0:
                             all_text += ' ' + text.strip()
 
-                    self.change_text.emit(all_text)
+                    self.main.change_text(all_text)
                     self.word_slider.setEnabled(True)
                     self.word_slider.setRange(1, len(all_text.split(' ')))
                     self.start_button.setEnabled(True)
@@ -463,7 +431,7 @@ class GUI(QMainWindow):
         regular_font = QFont('Arial', 12)
 
         self.help_widget = QTabWidget()
-        self.help_widget.setWindowTitle('SpeeDReaD v.2.1.3')
+        self.help_widget.setWindowTitle('SpeeDReaD v.2.1.3.001')
         self.help_widget.setFixedSize(800, 500)
         self.help_widget.setFont(QFont('Arial-Bold', 16))
 
@@ -480,7 +448,7 @@ class GUI(QMainWindow):
         logo_label.setPixmap(QPixmap('resources/sr_logo.svg'))
         container_layout.addWidget(logo_label, 0, 0, 2, 1, Qt.AlignTop)
 
-        help_title = QLabel('SpeeDReaD v.2.1.3')
+        help_title = QLabel('SpeeDReaD v.2.1.3.001')
         help_title.setFont(title_font)
         container_layout.addWidget(help_title, 0, 1)
 
@@ -488,7 +456,7 @@ class GUI(QMainWindow):
         help_text.setReadOnly(True)
         help_text.setStyleSheet('background: none; border: none;')
         help_text.setFont(regular_font)
-        help_text.setText('SpeeDReaD v.2.1.3 (pronounced Speedy Read-y) is a program to help you read faster. By flashing the'
+        help_text.setText('SpeeDReaD v.2.1.3.001 (pronounced Speedy Read-y) is a program to help you read faster. By flashing the'
                           'individual words of what you want to read on a single spot on your screen, you avoid both '
                           'the rapid eye movements and the internal sounding-out of the words that can slow you down. '
                           'In a short time, you will be able to increase your reading speed greatly.\n\n See below '
@@ -571,5 +539,5 @@ class GUI(QMainWindow):
         :param evt:
         :return:
         """
-        self.save_settings.emit()
+        self.main.save_settings()
         evt.accept()
