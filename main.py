@@ -1,7 +1,7 @@
 """
 This file and all files contained within this distribution are parts of the SpeeDReaD speed reading program.
 
-SpeeDReaD v.2.1.3.001
+SpeeDReaD v.2.1.3.002
 Written by Jeremy G Wilson
 
 ProjectOn is free software: you can redistribute it and/or
