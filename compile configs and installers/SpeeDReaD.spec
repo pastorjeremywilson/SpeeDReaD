@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['..\\SpeeDReaD.py'],
+    ['..\\main.py'],
     pathex=[],
     binaries=[],
     datas=[('X:/Documents/Python Workspace/SpeeDReaD/resources', 'resources/'), ('X:/Documents/Python Workspace/SpeeDReaD/README.md', '.'), ('X:/Documents/Python Workspace/SpeeDReaD/README.html', '.')],
@@ -32,7 +32,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['X:\\Documents\\Python Workspace\\SpeeDReaD\\resources\\icons.ico'],
+    icon=['X:\\Documents\\Python Workspace\\SpeeDReaD\\resources\\sr_logo.ico'],
 )
 coll = COLLECT(
     exe,

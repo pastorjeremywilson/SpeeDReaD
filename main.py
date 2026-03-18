@@ -1,7 +1,7 @@
 """
 This file and all files contained within this distribution are parts of the SpeeDReaD speed reading program.
 
-SpeeDReaD v.2.1.3
+SpeeDReaD v.2.2.0
 Written by Jeremy G Wilson
 
 ProjectOn is free software: you can redistribute it and/or
@@ -22,6 +22,7 @@ import json
 import os.path
 import re
 import sys
+import threading
 import time
 from os.path import exists
 
@@ -31,26 +32,41 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel
 
 from GUI import GUI
 
-class SpeedRead(QThread):
+class Main:
     settings = None
 
-    def __init__(self, gui):
+    def __init__(self):
         """
         Implements QThread to provide the ability to change the word(s) displayed in the reading area at the proper
         interval.
         :param GUI gui: The current instance of GUI
         """
-        self.load_settings()
-        self.gui = gui
+        super().__init__()
+        self.app = QApplication(sys.argv)
+
         self.current_word = 0
         self.keep_running = True
         self.wpm = 200
         self.reading_speed = None
-        self.word_array = None
+        self.word_array = []
 
-        super().__init__()
+        thread = threading.Thread(target=self.load_settings)
+        thread.start()
+        thread.join()
+        self.gui = GUI(self)
+        self.apply_settings()
+        self.change_text(' '.join(self.word_array))
 
-    def run(self):
+        self.gui.set_current_word_string.connect(self.gui.set_word)
+        self.gui.set_word_slider_value.connect(self.gui.word_slider_set_value)
+
+        sys.exit(self.app.exec())
+
+    def start_reading(self):
+        thread = threading.Thread(target=self.scroll_words)
+        thread.start()
+
+    def scroll_words(self):
         """
         Walks through the words in the user's text, applying the proper delay between words, and sends the word to the
         gui.
@@ -64,37 +80,26 @@ class SpeedRead(QThread):
         initial_slowdown = True
         slowdown_value = 2
         for i in range(self.current_word, len(self.word_array)):
-            if slowdown_value <= 1:
-                initial_slowdown = False
-
             if self.keep_running:
-                # skip_word is true if self.word_array[i] was already combined with the previous word
-                if not skip_word:
-                    if len(self.word_array[i]) < 4 and self.gui.group_words and not i == len(self.word_array) - 1:
-                        word = self.word_array[i] + ' ' + self.word_array[i + 1]
-                        skip_word = True
-                    else:
-                        word = self.word_array[i]
+                word = self.word_array[i]
+                delay = self.reading_speed
+                if self.gui.punctuation_pause:
+                    for punctuation in punctuations:
+                        if punctuation in word:
+                            delay = self.reading_speed * 1.5
+                            break
 
-                    delay = self.reading_speed
-                    if self.gui.punctuation_pause:
-                        for punctuation in punctuations:
-                            if punctuation in word:
-                                delay = self.reading_speed * 2
+                self.gui.set_current_word_string.emit(word)
+                self.gui.set_word_slider_value.emit(i + 1)
 
-                    self.gui.set_current_word_string.emit(word)
-                    self.gui.set_word_slider_value.emit(i + 1)
-                    app.processEvents()
-
-                    if initial_slowdown:
-                        time.sleep(delay * slowdown_value)
-                        slowdown_value = slowdown_value - 0.05
-                    else:
-                        time.sleep(delay)
-                    self.current_word = i
+                if initial_slowdown:
+                    time.sleep(delay * slowdown_value)
+                    slowdown_value = slowdown_value - 0.05
+                    if slowdown_value <= 1:
+                        initial_slowdown = False
                 else:
-                    skip_word = False
-                    self.gui.set_word_slider_value.emit(i + 1)
+                    time.sleep(delay)
+                self.current_word = i
 
                 if i == len(self.word_array) - 1:
                     finished = True
@@ -107,6 +112,7 @@ class SpeedRead(QThread):
             time.sleep(2)
             self.current_word = 0
             self.set_current_word(self.current_word)
+            self.gui.start_reading(True)
 
     def stop(self):
         """
@@ -127,7 +133,7 @@ class SpeedRead(QThread):
         self.reading_speed = 60 / wpm
         self.calc_time_remaining()
         if move_slider:
-            self.gui.set_speed_slider_value.emit(wpm)
+            self.gui.speed_slider.setValue(wpm)
 
     def set_current_word(self, word_num):
         """
@@ -137,11 +143,11 @@ class SpeedRead(QThread):
         :return:
         """
         self.current_word = word_num
-        self.gui.set_current_word_string.emit(self.word_array[self.current_word])
-        self.gui.set_word_slider_value.emit(word_num + 1)
+        self.gui.set_word(self.word_array[self.current_word])
+        self.gui.word_slider.setValue(word_num + 1)
         self.calc_time_remaining()
 
-    def change_text(self, text):
+    def change_text(self, text, reset_current_word=True):
         """
         Cleans and sets the block of text to be read. Resets the current word index to 0.
         :param text: Text to be read
@@ -155,9 +161,36 @@ class SpeedRead(QThread):
         text = re.sub("\t", "", text)
 
         self.word_array = text.strip().split(' ')
-        self.set_current_word(0)
-        self.gui.set_current_word_string.emit(self.word_array[0])
-        self.gui.set_current_word_index.emit(1)
+
+        # walk through the word array and combine small words if self.gui.group_words is true
+        if self.gui.group_words:
+            skip_word = False
+            new_array = []
+            for i in range(len(self.word_array)):
+                if not skip_word:
+                    if not i == len(self.word_array) - 1:
+                        if len(self.word_array[i]) < 4:
+                            new_array.append(self.word_array[i] + ' ' + self.word_array[i + 1])
+                            skip_word = True
+                        elif len(self.word_array[i + 1]) < 4:
+                            new_array.append(self.word_array[i] + ' ' + self.word_array[i + 1])
+                            skip_word = True
+                        else:
+                            new_array.append(self.word_array[i])
+                    else:
+                        new_array.append(self.word_array[i])
+                else:
+                    skip_word = False
+            self.word_array = new_array
+
+        self.gui.word_slider.setEnabled(True)
+        self.gui.word_slider.setRange(1, len(self.word_array))
+        self.gui.start_button.setEnabled(True)
+        self.gui.stop_button.setEnabled(True)
+
+        if reset_current_word:
+            self.gui.set_word(self.word_array[0])
+            self.set_current_word(0)
 
     def calc_time_remaining(self):
         """
@@ -188,7 +221,7 @@ class SpeedRead(QThread):
             else:
                 result = str(hours) + ':' + str(minutes) + ':' + str(seconds)
 
-            self.gui.set_time_remaining_text.emit(result + ' remaining')
+            self.gui.time_remainting_set_text(result + ' remaining')
 
     def timed_popup(self, text):
         """
@@ -196,10 +229,12 @@ class SpeedRead(QThread):
         :param text: The desired text to be shown
         :return:
         """
-        dialog = QWidget()
+        dialog = QWidget(self.gui)
         dialog.setStyleSheet('background-color: yellow')
-        dialog.setWindowFlag(Qt.FramelessWindowHint)
-        dialog.setGeometry(10, 20, 0, 20)
+        dialog.setWindowFlag(Qt.WindowType.FramelessWindowHint)
+        dialog.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint)
+
+        main_window_geometry = QApplication.primaryScreen().geometry()
         layout = QVBoxLayout()
         dialog.setLayout(layout)
 
@@ -207,18 +242,32 @@ class SpeedRead(QThread):
         label.setStyleSheet('color: red')
         label.setFont(QFont('Arial-Bold', 16))
         layout.addWidget(label)
+        dialog.adjustSize()
+
+        dialog.setGeometry(
+            int(main_window_geometry.width() / 2) - int(dialog.width() / 2),
+            int(main_window_geometry.height() / 2) - int(dialog.width() / 2),
+            dialog.width(),
+            dialog.height()
+        )
 
         dialog.show()
-        app.processEvents()
-        time.sleep(1.0)
-        dialog.destroy()
+        now_time = time.time()
+        while time.time() < now_time + 2:
+            if self.app.hasPendingEvents():
+                self.app.processEvents()
+            time.sleep(0.1)
+        dialog.deleteLater()
 
     def load_settings(self):
         """
         Method to retrieve the user's saved settings from the settings file.
         :return:
         """
-        data_dir = os.getenv('APPDATA') + '/SpeeDReaD'
+        if 'linux' in sys.platform:
+            data_dir = os.path.expanduser('~/.config/SpeeDReaD')
+        else:
+            data_dir = os.getenv('APPDATA') + '/SpeeDReaD'
         settings_file = data_dir + '/settings.json'
 
         if not exists(data_dir):
@@ -258,7 +307,10 @@ class SpeedRead(QThread):
         else:
             self.settings.update({'reading_text': None})
 
-        data_dir = os.getenv('APPDATA') + '/SpeeDReaD'
+        if 'linux' in sys.platform:
+            data_dir = os.path.expanduser('~/.config/SpeeDReaD')
+        else:
+            data_dir = os.getenv('APPDATA') + '/SpeeDReaD'
         settings_file = data_dir + '/settings.json'
 
         with open(settings_file, 'w') as file:
@@ -271,52 +323,42 @@ class SpeedRead(QThread):
         """
         if self.settings['reading_text'] and len(self.settings['reading_text']) > 0:
             self.change_text(self.settings['reading_text'])
-            self.gui.reading_ready.emit(len(self.settings['reading_text'].split(' ')))
+            self.gui.reading_ready_widget_set(len(self.settings['reading_text'].split(' ')))
 
         self.wpm = self.settings['speed']
         self.set_reading_speed(self.settings['speed'])
-        self.gui.set_speed_slider_value.emit(self.wpm)
+        self.gui.speed_slider.setValue(self.wpm)
 
         if self.settings['current_word']:
             self.set_current_word(self.settings['current_word'])
         else:
             self.current_word = 0
 
-        self.gui.set_gui_settings.emit(self.settings)
+        self.gui.current_font = QFont(self.settings['font_name'], self.settings['font_size'])
+        self.gui.word_label.setFont(self.gui.current_font)
+        self.gui.change_background(self.settings['background'])
 
-class Startup:
-    def __init__(self):
-        """
-        Startup initializes the program by first initializing GUI, then SpeedRead, setting GUI's various signals.
-        """
-        gui = GUI()
+        self.gui.punctuation_pause = self.settings['pause']
+        if self.settings['pause']:
+            self.gui.options_menu.pause_punctuation_action.setIcon(self.gui.icons['punctuation_on'])
+        else:
+            self.gui.options_menu.pause_punctuation_action.setIcon(self.gui.icons['punctuation_off'])
 
-        speed_read = SpeedRead(gui)
+        self.gui.group_words = self.settings['combine']
+        if self.settings['combine']:
+            self.gui.options_menu.group_words_action.setIcon(self.gui.icons['combine_on'])
+        else:
+            self.gui.options_menu.group_words_action.setIcon(self.gui.icons['combine_off'])
 
-        gui.set_reading_speed.connect(speed_read.set_reading_speed)
-        gui.start_words.connect(speed_read.start)
-        gui.stop_words.connect(speed_read.stop)
-        gui.set_current_word_index.connect(speed_read.set_current_word)
-        gui.set_current_word_string.connect(gui.set_word)
-        gui.change_text.connect(speed_read.change_text)
-        gui.save_settings.connect(speed_read.save_settings)
-        gui.timed_popup.connect(speed_read.timed_popup)
-        gui.block_word_slider_signals.connect(gui.word_slider_block_signals)
-        gui.set_word_slider_value.connect(gui.word_slider_set_value)
-        gui.set_speed_slider_value.connect(gui.speed_slider_set_value)
-        gui.set_time_remaining_text.connect(gui.time_remainting_set_text)
-        gui.reading_ready.connect(gui.reading_ready_widget_set)
-        gui.set_gui_settings.connect(gui.set_settings)
-
-        speed_read.apply_settings()
-        gui.showMaximized()
-        app.exec()
+        if not self.settings['speed']:
+            self.settings['speed'] = 200
+        self.gui.speed_slider.setValue(self.settings['speed'])
+        self.set_reading_speed(self.settings['speed'])
 
 
 if __name__ == '__main__':
     """
     Main entry point
     """
-    app = QApplication(sys.argv)
-    startup = Startup()
+    speed_read = Main()
 
