@@ -13,11 +13,18 @@ First, subvocalization is the natural tendency for all of us to "hear" the words
 
 Additionally, as we read blocks of text on a screen or in a book, our eyes tend to vacillate between rapid movements (saccades), as we move to the next word, and stops, as we focus on a word. By showing each word in the same area of the screen, SpeeD ReaD eliminates those unnecessary eye movements.
 
+# Changes in v.2.2.0
+
+- Fixed the word slider not always being adjusted to the length of the text being read
+- Fixed the 'Play/Pause' button not being deactivated after a reading ends
+- Improved the startup and threading procedures of the program
+- Improvements and tweaks to the visuals of the program
+
 # Installation
 
 Currently, SpeeDReaD is available for the Microsoft Windows operating
-system only. Download the current SpeeDReaD installer (v.2.1.3.002) and run
-it on your computer.
+system and Debian-based linux system. Download the current SpeeDReaD 
+installer for your system (v.2.2.0) and run it on your computer.
 
 # Using SpeeDReaD
 
@@ -59,32 +66,32 @@ There are a few Shortcut Keys that can be used when using the program:
 </thead>
 <tbody>
 	<tr>
-		<td>Ctrl-R</td>
+		<td>R</td>
 		<td>Start/Pause</td>
 		<td>Start or pause reading</td>
 	</tr>
 	<tr>
-		<td>Ctrl-Up</td>
+		<td>UP</td>
 		<td>Faster</td>
 		<td>Increase reading speed</td>
 	</tr>
 	<tr>
-		<td>Ctrl-Down</td>
+		<td>DOWN</td>
 		<td>Slower</td>
 		<td>Decrease reading speed</td>
 	</tr>
 	<tr>
-		<td>Ctrl-Left</td>
+		<td>LEFT</td>
 		<td>Previous Word</td>
 		<td>Go to the previous word</td>
 	</tr>
 	<tr>
-		<td>Ctrl-Right</td>
+		<td>RIGHT</td>
 		<td>Next Word</td>
 		<td>Go to the next word</td>
 	</tr>
 	<tr>
-		<td>Backspace</td>
+		<td>BACKSPACE</td>
 		<td>Stop</td>
 		<td>Stop and return to the beginning of the text</td>
 	</tr>

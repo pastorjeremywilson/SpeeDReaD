@@ -1,7 +1,7 @@
 """
 This file and all files contained within this distribution are parts of the SpeeDReaD speed reading program.
 
-SpeeDReaD v.2.1.3.002
+SpeeDReaD v.2.2.0
 Written by Jeremy G Wilson
 
 ProjectOn is free software: you can redistribute it and/or
@@ -35,14 +35,14 @@ from GUI import GUI
 class Main:
     settings = None
 
-    def __init__(self, app):
+    def __init__(self):
         """
         Implements QThread to provide the ability to change the word(s) displayed in the reading area at the proper
         interval.
         :param GUI gui: The current instance of GUI
         """
         super().__init__()
-        self.app = app
+        self.app = QApplication(sys.argv)
 
         self.current_word = 0
         self.keep_running = True
@@ -59,6 +59,8 @@ class Main:
 
         self.gui.set_current_word_string.connect(self.gui.set_word)
         self.gui.set_word_slider_value.connect(self.gui.word_slider_set_value)
+
+        sys.exit(self.app.exec())
 
     def start_reading(self):
         thread = threading.Thread(target=self.scroll_words)
@@ -358,7 +360,5 @@ if __name__ == '__main__':
     """
     Main entry point
     """
-    app = QApplication(sys.argv)
-    speed_read = Main(app)
-    sys.exit(app.exec())
+    speed_read = Main()
 
