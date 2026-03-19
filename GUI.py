@@ -1,3 +1,5 @@
+import sys
+
 import ebooklib
 import os.path
 import re
@@ -8,7 +10,7 @@ from ebooklib import epub
 from PyQt5.QtCore import pyqtSignal, Qt, QSize
 from PyQt5.QtGui import QFont, QIcon, QPixmap
 from PyQt5.QtWidgets import QWidget, QMainWindow, QLabel, QPushButton, QHBoxLayout, QVBoxLayout, QSlider, \
-    QDialog, QTextEdit, QFontDialog, QTabWidget, QTextBrowser, QGridLayout, QFileDialog
+    QDialog, QTextEdit, QFontDialog, QTabWidget, QTextBrowser, QGridLayout, QFileDialog, QApplication
 
 from OptionsMenu import OptionsMenu
 
@@ -47,6 +49,8 @@ class GUI(QMainWindow):
         self.create_gui()
         self.setWindowTitle('SpeeDReaD')
         self.setWindowIcon(self.icons['window'])
+        self.setMinimumSize(800, 600)
+
         self.setWindowState(Qt.WindowState.WindowMaximized)
         self.showMaximized()
 
@@ -56,10 +60,9 @@ class GUI(QMainWindow):
         :return:
         """
         main_widget = QWidget()
-        main_layout = QVBoxLayout()
+        main_layout = QVBoxLayout(main_widget)
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0)
-        main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
         self.setContentsMargins(0, 0, 0, 0)
         main_widget.setContentsMargins(0, 0, 0, 0)
