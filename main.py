@@ -111,9 +111,7 @@ class Main:
                 else:
                     skip_word = False
             else:
-                self.current_word = i
-                if skip_word:
-                    self.current_word -= 1
+                self.current_word = i - 1
                 self.calc_time_remaining()
                 break
 
