@@ -1,3 +1,5 @@
+import sys
+
 import ebooklib
 import os.path
 import re
@@ -8,7 +10,7 @@ from ebooklib import epub
 from PyQt5.QtCore import pyqtSignal, Qt, QSize
 from PyQt5.QtGui import QFont, QIcon, QPixmap
 from PyQt5.QtWidgets import QWidget, QMainWindow, QLabel, QPushButton, QHBoxLayout, QVBoxLayout, QSlider, \
-    QDialog, QTextEdit, QFontDialog, QTabWidget, QTextBrowser, QGridLayout, QFileDialog
+    QDialog, QTextEdit, QFontDialog, QTabWidget, QTextBrowser, QGridLayout, QFileDialog, QApplication
 
 from OptionsMenu import OptionsMenu
 
@@ -47,6 +49,8 @@ class GUI(QMainWindow):
         self.create_gui()
         self.setWindowTitle('SpeeDReaD')
         self.setWindowIcon(self.icons['window'])
+        self.setMinimumSize(800, 600)
+
         self.setWindowState(Qt.WindowState.WindowMaximized)
         self.showMaximized()
 
@@ -56,10 +60,9 @@ class GUI(QMainWindow):
         :return:
         """
         main_widget = QWidget()
-        main_layout = QVBoxLayout()
+        main_layout = QVBoxLayout(main_widget)
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0)
-        main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
         self.setContentsMargins(0, 0, 0, 0)
         main_widget.setContentsMargins(0, 0, 0, 0)
@@ -352,15 +355,28 @@ class GUI(QMainWindow):
         """
         dialog = QDialog()
         dialog.setModal(True)
+        dialog.setWindowTitle('Text to Read')
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         dialog.setLayout(layout)
 
+        upper_widget = QWidget()
+        layout.addWidget(upper_widget)
+        upper_layout = QHBoxLayout(upper_widget)
+
         label = QLabel('Paste text here:')
-        layout.addWidget(label)
+        upper_layout.addWidget(label)
+        upper_layout.addStretch()
 
         text_edit = QTextEdit()
+
+        clear_button = QPushButton('Clear Text')
+        clear_button.pressed.connect(lambda: text_edit.clear())
+        upper_layout.addWidget(clear_button)
+
         layout.addWidget(text_edit)
+        if len(self.main.word_array) > 0:
+            text_edit.setText(' '.join(self.main.word_array))
 
         button_widget = QWidget()
         button_layout = QHBoxLayout()
@@ -431,7 +447,7 @@ class GUI(QMainWindow):
         regular_font = QFont('Arial', 12)
 
         self.help_widget = QTabWidget()
-        self.help_widget.setWindowTitle('SpeeDReaD v.2.2.0')
+        self.help_widget.setWindowTitle('SpeeDReaD v.2.2.1')
         self.help_widget.setFixedSize(800, 500)
         self.help_widget.setFont(QFont('Arial-Bold', 16))
 
@@ -448,7 +464,7 @@ class GUI(QMainWindow):
         logo_label.setPixmap(QPixmap('resources/sr_logo.svg'))
         container_layout.addWidget(logo_label, 0, 0, 2, 1, Qt.AlignmentFlag.AlignTop)
 
-        help_title = QLabel('SpeeDReaD v.2.2.0')
+        help_title = QLabel('SpeeDReaD v.2.2.1')
         help_title.setFont(title_font)
         container_layout.addWidget(help_title, 0, 1)
 
@@ -456,7 +472,7 @@ class GUI(QMainWindow):
         help_text.setReadOnly(True)
         help_text.setStyleSheet('background: none; border: none;')
         help_text.setFont(regular_font)
-        help_text.setText('SpeeDReaD (pronounced Speedy Read-y) v.2.2.0 is a program to help you read faster. By flashing the '
+        help_text.setText('SpeeDReaD (pronounced Speedy Read-y) v.2.2.1 is a program to help you read faster. By flashing the '
                           'individual words of what you want to read on a single spot on your screen, you avoid both '
                           'the rapid eye movements and the internal sounding-out of the words that can slow you down. '
                           'In a short time, you will be able to increase your reading speed greatly.\n\nSee below '

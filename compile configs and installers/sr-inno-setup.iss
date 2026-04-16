@@ -2,10 +2,12 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "SpeeDReaD"
-#define MyAppVersion "2.1.3"
+#define MyAppVersion "2.2.1"
 #define MyAppPublisher "Wilson's Widgets"
 #define MyAppURL "https://sourceforge.net/projects/SpeeDReaD/"
 #define MyAppExeName "SpeeDReaD.exe"
+#define ProjectDir "X:\Documents\Python Workspace\SpeeDReaD"
+#define OutputDir "C:\Users\jeremy\Desktop\output"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -20,15 +22,15 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
-LicenseFile=C:\Users\pasto\Desktop\output\SpeeDReaD\_internal\resources\gpl-3.0.rtf
+LicenseFile={#OutputDir}\SpeeDReaD\_internal\resources\gpl-3.0.rtf
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest  
-WizardImageFile=X:\Documents\Python Workspace\SpeeDReaD\resources\installImage.bmp
+WizardImageFile={#ProjectDir}\resources\installImage.bmp
 WizardSmallImageFile = X:\Documents\Python Workspace\SpeeDReaD\resources\installImageSmall.bmp
 PrivilegesRequiredOverridesAllowed=dialog
-OutputDir=C:\Users\pasto\Desktop\output
+OutputDir={#OutputDir}\SpeeDReaD\installer
 OutputBaseFilename=Setup_SpeeDReaD_v.{#MyAppVersion}
-SetupIconFile=X:\Documents\Python Workspace\SpeeDReaD\resources\icons.ico
+SetupIconFile={#ProjectDir}\resources\sr_logo.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -40,9 +42,9 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\pasto\Desktop\output\SpeeDReaD\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\pasto\Desktop\output\SpeeDReaD\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\pasto\Desktop\output\SpeeDReaD\_internal\README.html"; DestDir: "{app}"; Flags: isreadme
+Source: "{#OutputDir}\SpeeDReaD\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#OutputDir}\SpeeDReaD\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#OutputDir}\SpeeDReaD\_internal\README.html"; DestDir: "{app}"; Flags: isreadme
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
