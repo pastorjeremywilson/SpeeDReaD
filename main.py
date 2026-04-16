@@ -1,7 +1,7 @@
 """
 This file and all files contained within this distribution are parts of the SpeeDReaD speed reading program.
 
-SpeeDReaD v.2.2.0
+SpeeDReaD v.2.2.1
 Written by Jeremy G Wilson
 
 ProjectOn is free software: you can redistribute it and/or
@@ -55,7 +55,6 @@ class Main:
         thread.join()
         self.gui = GUI(self)
         self.apply_settings()
-        self.change_text(' '.join(self.word_array))
 
         self.gui.set_current_word_string.connect(self.gui.set_word)
         self.gui.set_word_slider_value.connect(self.gui.word_slider_set_value)
@@ -81,30 +80,38 @@ class Main:
         slowdown_value = 2
         for i in range(self.current_word, len(self.word_array)):
             if self.keep_running:
-                word = self.word_array[i]
-                delay = self.reading_speed
-                if self.gui.punctuation_pause:
-                    for punctuation in punctuations:
-                        if punctuation in word:
-                            delay = self.reading_speed * 1.5
-                            break
+                if not skip_word:
+                    word = self.word_array[i]
+                    delay = self.reading_speed
+                    if self.gui.punctuation_pause:
+                        for punctuation in punctuations:
+                            if punctuation in word:
+                                delay = self.reading_speed * 1.5
+                                break
 
-                self.gui.set_current_word_string.emit(word)
-                self.gui.set_word_slider_value.emit(i + 1)
+                    if self.gui.group_words:
+                        if len(word) < 4 or len(self.word_array[i + 1]) < 4:
+                            word = word + ' ' + self.word_array[i + 1]
+                            skip_word = True
 
-                if initial_slowdown:
-                    time.sleep(delay * slowdown_value)
-                    slowdown_value = slowdown_value - 0.05
-                    if slowdown_value <= 1:
-                        initial_slowdown = False
+                    self.gui.set_current_word_string.emit(word)
+                    self.gui.set_word_slider_value.emit(i + 1)
+
+                    if initial_slowdown:
+                        time.sleep(delay * slowdown_value)
+                        slowdown_value = slowdown_value - 0.05
+                        if slowdown_value <= 1:
+                            initial_slowdown = False
+                    else:
+                        time.sleep(delay)
+                    self.current_word = i
+
+                    if i == len(self.word_array) - 1:
+                        finished = True
                 else:
-                    time.sleep(delay)
-                self.current_word = i
-
-                if i == len(self.word_array) - 1:
-                    finished = True
+                    skip_word = False
             else:
-                self.current_word = i
+                self.current_word = i - 1
                 self.calc_time_remaining()
                 break
 
@@ -161,27 +168,6 @@ class Main:
         text = re.sub("\t", "", text)
 
         self.word_array = text.strip().split(' ')
-
-        # walk through the word array and combine small words if self.gui.group_words is true
-        if self.gui.group_words:
-            skip_word = False
-            new_array = []
-            for i in range(len(self.word_array)):
-                if not skip_word:
-                    if not i == len(self.word_array) - 1:
-                        if len(self.word_array[i]) < 4:
-                            new_array.append(self.word_array[i] + ' ' + self.word_array[i + 1])
-                            skip_word = True
-                        elif len(self.word_array[i + 1]) < 4:
-                            new_array.append(self.word_array[i] + ' ' + self.word_array[i + 1])
-                            skip_word = True
-                        else:
-                            new_array.append(self.word_array[i])
-                    else:
-                        new_array.append(self.word_array[i])
-                else:
-                    skip_word = False
-            self.word_array = new_array
 
         self.gui.word_slider.setEnabled(True)
         self.gui.word_slider.setRange(1, len(self.word_array))
@@ -295,17 +281,17 @@ class Main:
         Method to save the current settings to the user's settings file.
         :return:
         """
-        self.settings.update({'speed': self.wpm})
-        self.settings.update({'current_word': self.current_word})
-        self.settings.update({'font_name': self.gui.current_font.family()})
-        self.settings.update({'font_size': self.gui.current_font.pointSize()})
-        self.settings.update({'background': self.gui.current_background})
-        self.settings.update({'pause': self.gui.punctuation_pause})
-        self.settings.update({'combine': self.gui.group_words})
+        self.settings['speed'] = self.wpm
+        self.settings['current_word'] = self.current_word
+        self.settings['font_name'] = self.gui.current_font.family()
+        self.settings['font_size'] = self.gui.current_font.pointSize()
+        self.settings['background'] = self.gui.current_background
+        self.settings['pause'] = self.gui.punctuation_pause
+        self.settings['combine'] = self.gui.group_words
         if self.word_array:
-            self.settings.update({'reading_text': ' '.join(self.word_array)})
+            self.settings['reading_text'] = ' '.join(self.word_array)
         else:
-            self.settings.update({'reading_text': None})
+            self.settings['reading_text'] = None
 
         if 'linux' in sys.platform:
             data_dir = os.path.expanduser('~/.config/SpeeDReaD')
@@ -321,18 +307,13 @@ class Main:
         Method to take the current settings and apply them to the program
         :return:
         """
-        if self.settings['reading_text'] and len(self.settings['reading_text']) > 0:
-            self.change_text(self.settings['reading_text'])
+        if self.settings['reading_text'] and len(self.settings['reading_text'].strip()) > 0:
+            self.change_text(self.settings['reading_text'], False)
             self.gui.reading_ready_widget_set(len(self.settings['reading_text'].split(' ')))
 
         self.wpm = self.settings['speed']
         self.set_reading_speed(self.settings['speed'])
         self.gui.speed_slider.setValue(self.wpm)
-
-        if self.settings['current_word']:
-            self.set_current_word(self.settings['current_word'])
-        else:
-            self.current_word = 0
 
         self.gui.current_font = QFont(self.settings['font_name'], self.settings['font_size'])
         self.gui.word_label.setFont(self.gui.current_font)
@@ -354,6 +335,11 @@ class Main:
             self.settings['speed'] = 200
         self.gui.speed_slider.setValue(self.settings['speed'])
         self.set_reading_speed(self.settings['speed'])
+
+        if self.settings['current_word']:
+            self.set_current_word(self.settings['current_word'])
+        else:
+            self.current_word = 0
 
 
 if __name__ == '__main__':

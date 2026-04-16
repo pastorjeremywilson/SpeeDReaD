@@ -1,9 +1,5 @@
 To Do:
 Done:
-    Fix reading status and button state when stopping at the end of the text
-    Fix word slider length when accepting new text that is shorter (probably not factoring doubling-up of small words?)
-    Redo word array when changing group words setting
-    Darken cream theme background
-    Dark grey font for light backgrounds, light grey for dark backgrounds
-    Improve icons
-    Fix hotkeys in help
+    Better tracking of current word
+    Ensure saved reading loads last read word
+    Keep current text in text popup, add clear button
