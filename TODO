@@ -1,5 +1,7 @@
 To Do:
 Done:
-    Better tracking of current word
-    Ensure saved reading loads last read word
-    Keep current text in text popup, add clear button
+    Focus on text area when opening reading dialog or clearing text
+    Lighten the black background slightly
+    Fix single-digit seconds in reading time left
+    Adjust toolbar color to compliment background
+

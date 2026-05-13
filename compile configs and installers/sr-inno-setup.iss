@@ -2,12 +2,12 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "SpeeDReaD"
-#define MyAppVersion "2.2.1"
+#define MyAppVersion "2.2.2"
 #define MyAppPublisher "Wilson's Widgets"
 #define MyAppURL "https://sourceforge.net/projects/SpeeDReaD/"
 #define MyAppExeName "SpeeDReaD.exe"
 #define ProjectDir "X:\Documents\Python Workspace\SpeeDReaD"
-#define OutputDir "C:\Users\jeremy\Desktop\output"
+#define OutputDir "C:\Users\pasto\Desktop\output"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.

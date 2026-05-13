@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['../main.py'],
+    ['..\\main.py'],
     pathex=[],
     binaries=[],
     datas=[('../resources', 'resources/'), ('../README.md', '.'), ('../README.html', '.')],
@@ -32,7 +32,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['../resources/icon.ico'],
+    icon=['..\\resources\\sr_logo.ico'],
 )
 coll = COLLECT(
     exe,
