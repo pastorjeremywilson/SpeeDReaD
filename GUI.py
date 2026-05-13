@@ -8,7 +8,7 @@ import time
 from codecs import decode
 from ebooklib import epub
 from PyQt5.QtCore import pyqtSignal, Qt, QSize
-from PyQt5.QtGui import QFont, QIcon, QPixmap
+from PyQt5.QtGui import QFont, QIcon, QPixmap, QTextCursor
 from PyQt5.QtWidgets import QWidget, QMainWindow, QLabel, QPushButton, QHBoxLayout, QVBoxLayout, QSlider, \
     QDialog, QTextEdit, QFontDialog, QTabWidget, QTextBrowser, QGridLayout, QFileDialog, QApplication
 
@@ -18,6 +18,7 @@ from OptionsMenu import OptionsMenu
 class GUI(QMainWindow):
     set_current_word_string = pyqtSignal(str)
     set_word_slider_value = pyqtSignal(int)
+    set_time_remaining = pyqtSignal()
 
     current_font = None
     punctuation_pause = None
@@ -68,10 +69,12 @@ class GUI(QMainWindow):
         main_widget.setContentsMargins(0, 0, 0, 0)
 
         self.word_widget = QWidget()
+        self.word_widget.setObjectName('word_widget')
         word_layout = QVBoxLayout()
         self.word_widget.setLayout(word_layout)
 
         self.word_label = QLabel('SpeeDReaD')
+        self.word_label.setObjectName('word_label')
         self.word_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         word_layout.addStretch()
         word_layout.addWidget(self.word_label)
@@ -80,10 +83,10 @@ class GUI(QMainWindow):
         main_layout.addWidget(self.word_widget)
 
         slider_container = QWidget()
+        slider_container.setObjectName('slider_container')
         slider_layout = QHBoxLayout()
         slider_layout.setContentsMargins(50, 10, 50, 10)
         slider_container.setLayout(slider_layout)
-        slider_container.setStyleSheet('background-color: white')
 
         self.word_slider = QSlider()
         self.word_slider.setOrientation(Qt.Orientation.Horizontal)
@@ -97,7 +100,6 @@ class GUI(QMainWindow):
 
         button_widget = QWidget()
         button_widget.setObjectName('button_widget')
-        button_widget.setStyleSheet('#button_widget { background-color: #F0F0FF; border-top: 1px solid #A0A0FF}')
         button_layout = QHBoxLayout()
         button_layout.setContentsMargins(50, 10, 50, 10)
         button_widget.setLayout(button_layout)
@@ -119,19 +121,17 @@ class GUI(QMainWindow):
         speed_widget.setLayout(speed_layout)
 
         self.speed_label = QLabel('200 wpm')
+        self.speed_label.setObjectName('info_label')
         self.speed_label.setFont(QFont('Arial', 12, QFont.Bold))
         speed_layout.addWidget(self.speed_label)
 
         self.time_remaining_label = QLabel()
+        self.time_remaining_label.setObjectName('info_label')
         speed_layout.addWidget(self.time_remaining_label)
         button_layout.addWidget(speed_widget)
 
         load_button = QPushButton()
         load_button.setIcon(self.icons['edit'])
-        load_button.setStyleSheet(
-            'QPushButton { background-color: #F0F0FF; border: none; }' +
-            'QPushButton:hover { background-color: lightgrey; border: none; }'
-        )
         load_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         load_button.setIconSize(QSize(32, 32))
         load_button.setToolTip('Paste or import text to read')
@@ -141,11 +141,6 @@ class GUI(QMainWindow):
 
         self.start_button = QPushButton()
         self.start_button.setIcon(self.icons['play'])
-        self.start_button.setStyleSheet(
-            'QPushButton { background-color: #F0F0FF; border: none; }' +
-            'QPushButton:hover { background-color: lightgrey; border: none; }' +
-            'QPushButton:checked { background-color: lightgrey; border: none; }'
-        )
         self.start_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.start_button.setIconSize(QSize(32, 32))
         self.start_button.setToolTip('Start or Pause reading')
@@ -157,10 +152,6 @@ class GUI(QMainWindow):
 
         self.stop_button = QPushButton()
         self.stop_button.setIcon(self.icons['stop'])
-        self.stop_button.setStyleSheet(
-            'QPushButton { background-color: #F0F0FF; border: none; }' +
-            'QPushButton:hover { background-color: lightgrey; border: none; }'
-        )
         self.stop_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.stop_button.setIconSize(QSize(32, 32))
         self.stop_button.setToolTip('Stop and return to the first word')
@@ -172,10 +163,6 @@ class GUI(QMainWindow):
 
         self.options_button = QPushButton()
         self.options_button.setIcon(self.icons['settings'])
-        self.options_button.setStyleSheet(
-            'QPushButton { background-color: #F0F0FF; border: none; }' +
-            'QPushButton:hover { background-color: lightgrey; border: none; }'
-        )
         self.options_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.options_button.setIconSize(QSize(32, 32))
         self.options_button.setToolTip('Options')
@@ -254,18 +241,10 @@ class GUI(QMainWindow):
         :return:
         """
         self.current_background = color
-        if color == 'white':
-            self.word_widget.setStyleSheet('background-color: white;')
-            self.word_label.setStyleSheet('color: #303040;')
-        elif color == 'cream':
-            self.word_widget.setStyleSheet('background-color: #cfc0a0;')
-            self.word_label.setStyleSheet('color: #303040;')
-        elif color == 'neutral':
-            self.word_widget.setStyleSheet('background-color: #a0a0a5;')
-            self.word_label.setStyleSheet('color: #303040;')
-        elif color == 'black':
-            self.word_widget.setStyleSheet('background-color: black;')
-            self.word_label.setStyleSheet('color: #b0b0b5;')
+        """with open('resources/AMOLED.qss', 'r') as file:
+            self.main.app.setStyleSheet(file.read())
+        return"""
+        self.main.app.setStyleSheet(self.main.qss[color])
 
     def pause_for_punctuation(self):
         """
@@ -370,8 +349,12 @@ class GUI(QMainWindow):
 
         text_edit = QTextEdit()
 
+        def clear_text_edit():
+            text_edit.clear()
+            text_edit.setFocus()
+
         clear_button = QPushButton('Clear Text')
-        clear_button.pressed.connect(lambda: text_edit.clear())
+        clear_button.pressed.connect(clear_text_edit)
         upper_layout.addWidget(clear_button)
 
         layout.addWidget(text_edit)
@@ -405,6 +388,11 @@ class GUI(QMainWindow):
         import_button.pressed.connect(lambda: dialog.done(2))
         layout.addWidget(import_button, 0, Qt.AlignmentFlag.AlignCenter)
 
+        text_edit.setFocus()
+        if len(text_edit.toPlainText().strip()) > 0:
+            cursor = text_edit.textCursor()
+            cursor.movePosition(QTextCursor.End)
+            text_edit.setTextCursor(cursor)
         result = dialog.exec()
         if result == 0:
             self.main.change_text(text_edit.toPlainText())
@@ -447,7 +435,7 @@ class GUI(QMainWindow):
         regular_font = QFont('Arial', 12)
 
         self.help_widget = QTabWidget()
-        self.help_widget.setWindowTitle('SpeeDReaD v.2.2.1')
+        self.help_widget.setWindowTitle('SpeeDReaD v.2.2.2')
         self.help_widget.setFixedSize(800, 500)
         self.help_widget.setFont(QFont('Arial-Bold', 16))
 
@@ -464,7 +452,7 @@ class GUI(QMainWindow):
         logo_label.setPixmap(QPixmap('resources/sr_logo.svg'))
         container_layout.addWidget(logo_label, 0, 0, 2, 1, Qt.AlignmentFlag.AlignTop)
 
-        help_title = QLabel('SpeeDReaD v.2.2.1')
+        help_title = QLabel('SpeeDReaD v.2.2.2')
         help_title.setFont(title_font)
         container_layout.addWidget(help_title, 0, 1)
 
@@ -472,7 +460,7 @@ class GUI(QMainWindow):
         help_text.setReadOnly(True)
         help_text.setStyleSheet('background: none; border: none;')
         help_text.setFont(regular_font)
-        help_text.setText('SpeeDReaD (pronounced Speedy Read-y) v.2.2.1 is a program to help you read faster. By flashing the '
+        help_text.setText('SpeeDReaD (pronounced Speedy Read-y) v.2.2.2 is a program to help you read faster. By flashing the '
                           'individual words of what you want to read on a single spot on your screen, you avoid both '
                           'the rapid eye movements and the internal sounding-out of the words that can slow you down. '
                           'In a short time, you will be able to increase your reading speed greatly.\n\nSee below '
