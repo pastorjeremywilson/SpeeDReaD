@@ -13,17 +13,16 @@ First, subvocalization is the natural tendency for all of us to "hear" the words
 
 Additionally, as we read blocks of text on a screen or in a book, our eyes tend to vacillate between rapid movements (saccades), as we move to the next word, and stops, as we focus on a word. By showing each word in the same area of the screen, SpeeD ReaD eliminates those unnecessary eye movements.
 
-# Changes in v.2.2.1
+# Changes in v.2.2.2
 
-- Made sure that changing word grouping didn't affect the current word being read
-- Fixed saved text not loading to the last word read
-- Current text being read now remains in the "Text to Read" dialog; added a "Clear Text" button
+- Some more refinements to the GUI
+- Ensured the text box for the text to read receives focus when opening or clearing the text
 
 # Installation
 
 Currently, SpeeDReaD is available for the Microsoft Windows operating
 system and Debian-based linux system. Download the current SpeeDReaD 
-installer for your system (v.2.2.1) and run it on your computer.
+installer for your system (v.2.2.2) and run it on your computer.
 
 # Using SpeeDReaD
 

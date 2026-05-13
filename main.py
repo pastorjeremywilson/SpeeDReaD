@@ -1,7 +1,7 @@
 """
 This file and all files contained within this distribution are parts of the SpeeDReaD speed reading program.
 
-SpeeDReaD v.2.2.1
+SpeeDReaD v.2.2.2
 Written by Jeremy G Wilson
 
 ProjectOn is free software: you can redistribute it and/or
@@ -53,13 +53,30 @@ class Main:
         thread = threading.Thread(target=self.load_settings)
         thread.start()
         thread.join()
+
+        self.qss = {}
+        thread = threading.Thread(target=self.load_qss)
+        thread.start()
+        thread.join()
+
         self.gui = GUI(self)
         self.apply_settings()
 
         self.gui.set_current_word_string.connect(self.gui.set_word)
         self.gui.set_word_slider_value.connect(self.gui.word_slider_set_value)
+        self.gui.set_time_remaining.connect(self.calc_time_remaining)
 
         sys.exit(self.app.exec())
+
+    def load_qss(self):
+        with open('resources/white.qss', 'r') as file:
+            self.qss['white'] = file.read()
+        with open('resources/cream.qss', 'r') as file:
+            self.qss['cream'] = file.read()
+        with open('resources/neutral.qss', 'r') as file:
+            self.qss['neutral'] = file.read()
+        with open('resources/black.qss', 'r') as file:
+            self.qss['black'] = file.read()
 
     def start_reading(self):
         thread = threading.Thread(target=self.scroll_words)
@@ -96,6 +113,7 @@ class Main:
 
                     self.gui.set_current_word_string.emit(word)
                     self.gui.set_word_slider_value.emit(i + 1)
+                    self.gui.set_time_remaining.emit()
 
                     if initial_slowdown:
                         time.sleep(delay * slowdown_value)
@@ -202,12 +220,17 @@ class Main:
             elif time_left < 1:
                 seconds = int(time_left * 60)
 
-            if hours < 1 and minutes < 1:
-                result = 'less than 1 minute'
-            else:
-                result = str(hours) + ':' + str(minutes) + ':' + str(seconds)
+            str_hours = str(hours)
+            str_minutes = str(minutes)
+            str_seconds = str(seconds)
+            if minutes < 10:
+                str_minutes = f'0{str_minutes}'
+            if seconds < 10:
+                str_seconds = f'0{str_seconds}'
 
-            self.gui.time_remainting_set_text(result + ' remaining')
+            time_string = str_hours + ':' + str_minutes + ':' + str_seconds
+
+            self.gui.time_remainting_set_text(time_string + ' remaining')
 
     def timed_popup(self, text):
         """

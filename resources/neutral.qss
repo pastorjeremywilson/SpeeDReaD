@@ -1,0 +1,48 @@
+QWidget#word_widget {
+    background: #a0a0a5;
+}
+
+QWidget#button_widget {
+    background: #c0c0c5;
+}
+
+QLabel#info_label {
+    color: #303032;
+}
+
+QWidget#slider_container {
+    background: #c0c0c5;
+    border-top: 2px solid black;
+}
+
+QLabel#word_label {
+    color: #303032;
+}
+
+QSlider {
+    background: #c0c0c5;
+    height: 20px;
+}
+QSlider::handle {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #f0f0f2, stop:1 #808082);
+    width: 10px;
+    margin: -6px 0px;
+    border: 1px solid #303032;
+    border-radius: 3px;
+}
+QSlider::groove {
+    background: #303032;
+    height: 4px;
+    border-radius: 2px;
+}
+
+QPushButton {
+    background-color: transparent;
+    border: 1px solid transparent;
+}
+QPushButton:hover {
+    background: rgba(255, 255, 255, 50);
+}
+QPushButton:checked {
+    background: rgba(0, 0, 0, 50)
+}

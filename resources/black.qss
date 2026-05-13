@@ -1,0 +1,30 @@
+QWidget#word_widget {
+    background: #101012;
+}
+
+QWidget#button_widget {
+    background: #101012;
+}
+
+QLabel#info_label {
+    color: #b0b0b5;
+}
+
+QWidget#slider_container {
+    background: #101012;
+    border-top: 2px solid #b0b0b5;
+}
+
+QLabel#word_label {
+    color: #b0b0b5;
+}
+
+QSlider {
+    background: #101012;
+}
+QSlider::handle {
+    color: #101012;
+}
+QSlider::groove {
+    color: #303032;
+}
